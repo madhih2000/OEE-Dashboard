@@ -14,6 +14,7 @@ failure_rate_icon = html.I(className="bi bi-exclamation-triangle-fill me-2")
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 server = app.server
+
 # Helper function to determine badge color based on status
 def get_badge_color(status):
     return "success" if status == "Running" else "danger"
@@ -88,7 +89,7 @@ def create_material_pie_chart(material_used, waste_material):
     material_used_percentage, waste_material_percentage = calculate_material_percentages(material_used, waste_material)
 
     # Data for the pie chart
-    values = [f"{material_used_percentage:.1f}%", f"{waste_material_percentage:.1f}%"]
+    values = [material_used_percentage, waste_material_percentage]
     labels = ['Material Used', 'Waste Material']
     hover_text = [
         f"Material Used: {material_used} KG ({material_used_percentage:.2f}%)",
@@ -100,16 +101,15 @@ def create_material_pie_chart(material_used, waste_material):
         values=values,
         hole=0.4,  # Donut chart style
         hoverinfo='text',            # Use custom hover text
-        textinfo='value',      
+        textinfo='none',      
         text=hover_text,             # Custom text for hover
         marker=dict(colors=['#2ca02c', '#d62728'])  # Green for material used, red for waste material
     )])
 
     fig.update_layout(
         title="Material Usage Breakdown",
-        height=300,
-        width=400,
-        margin=dict(t=20, b=20, l=20, r=20)  # Adjust margins as needed
+        height=500,
+        width=500,
     )
 
     return fig
@@ -144,9 +144,8 @@ def create_runtime_pie_chart(run_time, expected_time):
 
     fig.update_layout(
         title="Progress of Process",
-        height=300,
-        width=400,
-        margin=dict(t=20, b=20, l=20, r=20)  # Adjust margins as needed
+        height=500,
+        width=500,
     )
 
     return fig
@@ -293,9 +292,14 @@ def create_process_layout(process):
                     dbc.Card(
                         dbc.CardBody(
                             dcc.Graph(figure=gauge),
+                            
                         ),
                         className="mb-3",
-                        style={"width": "300px", "padding": "10px"}  # Adjust padding to control spacing
+                        style={
+                            "border": "none",          # Hide the card outline
+                            "background-color": "transparent",  # Make background transparent
+                            "box-shadow": "none"       # Optional: Remove box shadow if present
+                        },# Adjust padding to control spacing
                     ),
                     width=2,  # Set width to evenly distribute space
                 )
@@ -308,11 +312,21 @@ def create_process_layout(process):
         ),
         dbc.Row(
             [
-                dbc.Col(runtime_pie_chart, width=6),
-                dbc.Col(material_pie_chart, width=6),
+                dbc.Col(
+                    runtime_pie_chart,
+                    width=6,
+                    className="d-flex justify-content-end",  # Align content to the right
+                    style={"padding-right": "0"},  # Remove right padding if needed
+                ),
+                dbc.Col(
+                    material_pie_chart,
+                    width=6,
+                    className="d-flex justify-content-start",  # Align content to the left
+                    style={"padding-left": "0"},  # Remove left padding if needed
+                ),
             ],
             className="mb-4",
-            style={"margin-top": "20px"} 
+            style={"margin-top": "20px"}
         ),
         dbc.Row(
             [
