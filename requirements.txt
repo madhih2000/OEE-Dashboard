@@ -4,3 +4,4 @@ dash-daq
 numpy
 dash-bootstrap-components 
 dash-spa
+gunicorn
