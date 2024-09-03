@@ -14,7 +14,6 @@ failure_rate_icon = html.I(className="bi bi-exclamation-triangle-fill me-2")
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 server = app.server
-
 # Helper function to determine badge color based on status
 def get_badge_color(status):
     return "success" if status == "Running" else "danger"
@@ -89,7 +88,7 @@ def create_material_pie_chart(material_used, waste_material):
     material_used_percentage, waste_material_percentage = calculate_material_percentages(material_used, waste_material)
 
     # Data for the pie chart
-    values = [material_used_percentage, waste_material_percentage]
+    values = [f"{material_used_percentage:.1f}%", f"{waste_material_percentage:.1f}%"]
     labels = ['Material Used', 'Waste Material']
     hover_text = [
         f"Material Used: {material_used} KG ({material_used_percentage:.2f}%)",
@@ -294,7 +293,6 @@ def create_process_layout(process):
                     dbc.Card(
                         dbc.CardBody(
                             dcc.Graph(figure=gauge),
-                            style={"width": "100%", "height": "100%"}
                         ),
                         className="mb-3",
                         style={"width": "300px", "padding": "10px"}  # Adjust padding to control spacing
@@ -507,7 +505,7 @@ def create_units_bar_chart():
             ),
         ],
         layout=go.Layout(
-            title="Units Produced by Each Step",
+            title="Units Produced by Each Process",
             xaxis=dict(title="Process Steps"),
             yaxis=dict(title="Units Produced"),
         ),
@@ -542,7 +540,7 @@ def create_downtime_failure_chart():
 app.layout = html.Div([
     html.H3("Process Monitoring Dashboard", className="my-4 text-center"),
     dcc.Tabs([
-        dcc.Tab(label="Overall Dashboard", children=create_overview_layout()),
+        dcc.Tab(label="Overall", children=create_overview_layout()),
         # Create individual tabs for each process
         *[
             dcc.Tab(label=process["step"], children=create_process_layout(process))
