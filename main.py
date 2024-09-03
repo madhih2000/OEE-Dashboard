@@ -13,6 +13,8 @@ failure_rate_icon = html.I(className="bi bi-exclamation-triangle-fill me-2")
 # Initialize the Dash app with the Bootstrap theme
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+server = app.server
+
 # Helper function to determine badge color based on status
 def get_badge_color(status):
     return "success" if status == "Running" else "danger"
