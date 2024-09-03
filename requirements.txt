@@ -1,0 +1,6 @@
+dash 
+plotly
+dash-daq
+numpy
+dash-bootstrap-components 
+dash-spa
