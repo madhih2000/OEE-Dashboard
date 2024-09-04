@@ -35,6 +35,57 @@ processes = [
 ]
 
 
+def create_oee_summary_chart():
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=[process["step"] for process in processes],
+        y=[process["oee"] for process in processes],
+        marker=dict(color="#008080"),
+    ))
+
+    fig.update_layout(
+        title="OEE Summary Across All Processes",
+        xaxis=dict(title="Process Steps"),
+        yaxis=dict(title="OEE (%)"),
+        height=500,
+    )
+
+    return fig
+
+
+def create_spider_chart():
+    # Data preparation
+    categories = ['Availability', 'Performance', 'Quality']
+    fig = go.Figure()
+
+    for process in processes:
+        values = [process['availability'], process['performance'], process['quality']]
+        
+        # Create hover text for each point
+        hover_text = [f"{category}: {value}%" for category, value in zip(categories, values)]
+        
+        fig.add_trace(go.Scatterpolar(
+            r=values + [values[0]],  # Complete the loop
+            theta=categories + [categories[0]],  # Complete the loop
+            fill='toself',
+            name=process['step'],
+            hoverinfo='text',
+            text=[', '.join(hover_text)] * len(values)  # Repeat hover text for each point
+        ))
+
+
+    fig.update_layout(
+        title="Spider Chart of Availability, Performance, and Quality",
+        polar=dict(
+            radialaxis=dict(visible=True, range=[0, 100])
+        ),
+        showlegend=True,
+        height=500,
+    )
+
+    return fig
+
 # Function to create the main overview dashboard layout
 def create_overview_layout():
     return dbc.Container([
@@ -59,7 +110,13 @@ def create_overview_layout():
         style={"paddingTop": "20px"},
         className="mb-4"
     ),
-
+        dbc.Row(
+                [
+                    dbc.Col(dcc.Graph(id='oee-summary-chart', figure=create_oee_summary_chart()), width=6),
+                    dbc.Col(dcc.Graph(id='spider-chart', figure=create_spider_chart()), width=6),
+                ],
+                className="mb-4"
+            ),
         dbc.Row(
             [
                 dbc.Col(dcc.Graph(id='downtime-uptime-chart', figure=create_downtime_uptime_chart()), width=6),
